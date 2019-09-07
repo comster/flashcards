@@ -5,7 +5,6 @@
      <router-link :to="{ name: 'home' }">Home</router-link> |
      <router-link :to="{ name: 'study' }">Study</router-link> |
      <router-link :to="{ name: 'cards' }">Cards</router-link>
-     <!--<router-link :to="{ name: 'messages' }">Messages</router-link>-->
     </div>
     <router-view/>
   </div>

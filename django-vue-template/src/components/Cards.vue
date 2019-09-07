@@ -3,30 +3,36 @@
     <p>Add and remove flashcards below</p>
     <br/>
     <p>Word</p>
-    <input type="text" placeholder="ex. apple" v-model="subject">
+    <input type="text" placeholder="ex. apple" v-model="word">
     <p>Definition</p>
-    <input type="text" placeholder="ex. the round fruit of a tree of the rose family" v-model="msgBody">
+    <input type="text" placeholder="ex. the round fruit of a tree of the rose family" v-model="definition">
     <br><br>
     <input 
       type="submit" 
       value="Add" 
-      @click="addMessage({ subject: subject, body: msgBody })" 
-      :disabled="!subject || !msgBody">
+      @click="addCard({ word: word, definition: definition })" 
+      :disabled="!word || !definition">
 
     <hr/>
     <h3>Flashcards</h3>
     <p v-if="cards.length === 0">No Cards</p>
-    <div class="msg" v-for="(msg, index) in cards" :key="index">
-        <p class="card-number">#{{index+1}}</p>
+    <div class="card" v-for="(card, index) in cards" :key="index">
+        <p class="card-number">ID#{{card.pk}}</p>
         <p class="card-word">
           Word:
-          <b v-html="msg.subject"></b>
+          <b v-html="card.word"></b>
         </p>
-        <p class="msg-body">
+        <p class="card-definition">
           Definition:
-          <b v-html="msg.body"></b>
+          <b v-html="card.definition"></b>
         </p>
-        <input type="submit" @click="deleteMessage(msg.pk)" value="Delete" />
+        <p class="card-binNum">Bin #<span v-html="card.binNum"></span></p>
+        <p class="card-nextReviewAt">Next review: <span v-html="card.nextReviewAt"></span></p>
+        <p class="card-wrongCount">Times answered incorrect: <span v-html="card.wrongCount"></span></p>
+        
+        <input type="submit" @click="answerCardCorrect(card.pk)" value="Correct" />
+        <input type="submit" @click="answerCardIncorrect(card.pk)" value="Incorrect" />
+        <input type="submit" @click="deleteCard(card.pk)" value="Delete" />
     </div>
   </div>
 </template>
@@ -38,8 +44,12 @@ export default {
   name: "Cards",
   data() {
     return {
-      subject: "",
-      msgBody: "",
+      pk: 0,
+      binNum: 0,
+      wrongCount: 0,
+      nextReviewAt: null,
+      word: "",
+      definition: "",
     };
   },
   computed: mapState({
@@ -47,6 +57,8 @@ export default {
   }),
   methods: mapActions('cards', [
     'addCard',
+    'answerCardCorrect',
+    'answerCardIncorrect',
     'deleteCard'
   ]),
   created() {

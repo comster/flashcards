@@ -24,10 +24,10 @@ export default new Router({
       name: 'cards',
       component: Cards
     },
-    {
-      path: '/messages',
-      name: 'messages',
-      component: Messages
-    }
+    // {
+    //   path: '/messages',
+    //   name: 'messages',
+    //   component: Messages
+    // }
   ]
 })
