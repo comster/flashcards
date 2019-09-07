@@ -50,10 +50,16 @@
           <p class="card-nextReviewAt">Next review: <span v-html="card.nextReviewAt"></span></p>
           <p class="card-wrongCount">Times answered incorrect: <span v-html="card.wrongCount"></span></p>
           
-          <input type="submit" @click="answerCardCorrect(card.pk)" value="Correct" />
-          <input type="submit" @click="answerCardIncorrect(card.pk)" value="Incorrect" />
-          <input type="submit" @click="deleteCard(card.pk)" value="Delete" />
+          <b-button-group size="sm">
+            <b-button variant="success" @click="answerCardCorrect(card.pk)">Right</b-button>
+            <b-button variant="warning" @click="answerCardIncorrect(card.pk)">Wrong</b-button>
+            <b-button variant="danger" @click="deleteCard(card.pk)">Delete</b-button>
+          </b-button-group>
+          <!--<input type="submit" @click="answerCardCorrect(card.pk)" value="Correct" />-->
+          <!--<input type="submit" @click="answerCardIncorrect(card.pk)" value="Incorrect" />-->
+          <!--<input type="submit" @click="deleteCard(card.pk)" value="Delete" />-->
         </b-card>
+        <br />
       </b-col>
     </b-row>
   </b-container>
@@ -63,21 +69,20 @@
 import { mapState, mapActions } from 'vuex'
 
 import Vue from 'vue'
-import { FormGroupPlugin, FormPlugin, FormInputPlugin, LayoutPlugin, CardPlugin } from 'bootstrap-vue'
+import { FormGroupPlugin, FormPlugin, FormInputPlugin, LayoutPlugin, CardPlugin, ButtonGroupPlugin, ToastPlugin } from 'bootstrap-vue'
+
+Vue.use(ToastPlugin)
 Vue.use(FormInputPlugin)
 Vue.use(LayoutPlugin)
 Vue.use(FormGroupPlugin)
 Vue.use(FormPlugin)
 Vue.use(CardPlugin)
+Vue.use(ButtonGroupPlugin)
 
 export default {
   name: "Cards",
   data() {
     return {
-      pk: 0,
-      binNum: 0,
-      wrongCount: 0,
-      nextReviewAt: null,
       word: "",
       definition: "",
     };
@@ -85,12 +90,58 @@ export default {
   computed: mapState({
     cards: state => state.cards.cards
   }),
-  methods: mapActions('cards', [
-    'addCard',
-    'answerCardCorrect',
-    'answerCardIncorrect',
-    'deleteCard'
-  ]),
+  methods:
+    {
+      addCard(values) {
+        this.$store.dispatch('cards/addCard', values)
+          .then(() => {
+            this.word = ""
+            this.definition = ""
+            this.$bvToast.toast(`Your card was added`, {
+              title: values.word,
+              autoHideDelay: 5000,
+              appendToast: false,
+              variant: 'success'
+            })
+          })
+      },
+      answerCardCorrect(pk) {
+        this.$store.dispatch('cards/answerCardCorrect', pk)
+        .then((card) => {
+            this.$bvToast.toast(`Answered correctly and moved to bin ${card.binNum}`, {
+              title: card.word,
+              autoHideDelay: 5000,
+              variant: 'success'
+            })
+          })
+      },
+      answerCardIncorrect(pk) {
+        this.$store.dispatch('cards/answerCardIncorrect', pk)
+          .then((card) => {
+            this.$bvToast.toast(`Answered wrong ${card.wrongCount} times`, {
+              title: card.word,
+              autoHideDelay: 5000,
+              variant: 'warning'
+            })
+          })
+      },
+      deleteCard(pk) {
+        this.$store.dispatch('cards/deleteCard', pk)
+          .then(() => {
+            this.$bvToast.toast(`Card deleted`, {
+              autoHideDelay: 5000,
+              variant: 'danger'
+            })
+          })
+      },
+    }
+    // mapActions('cards', [
+    // 'addCard',
+    // 'answerCardCorrect',
+    // 'answerCardIncorrect',
+    // 'deleteCard'
+    // ])
+  ,
   created() {
     this.$store.dispatch('cards/getCards')
   }

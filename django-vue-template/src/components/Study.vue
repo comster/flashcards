@@ -1,11 +1,7 @@
 <template>
   <b-container class="bv-example-row study">
-  <!--<div class="study">-->
-    <!--<div class="flashcard" v-if="card">-->
     <b-row class="flashcard justify-content-md-center" v-if="card">
-      <!--<p class="card-number">ID#{{card.pk}}</p>-->
       <div class="card-front" v-if="cardSide == 'front'">
-        
         <b-card
           v-bind:title="card.word"
           tag="article"
@@ -13,25 +9,12 @@
         >
           <b-button href="#" variant="primary" @click="showDefinition(card.pk)">Show definition</b-button>
         </b-card>
-        
-        <!--<p class="card-word">-->
-        <!--  <h1 v-html="card.word"></h1>-->
-        <!--</p>-->
-        <!--<button @click="showDefinition(card.pk)">Show definition</button>-->
       </div>
       <div class="card-back" v-if="cardSide == 'back'">
-        
         <b-card v-bind:title="card.word" v-bind:sub-title="card.definition">
           <b-link href="#" class="card-link" @click="answerCardCorrect(card.pk)">I got it</b-link>
           <b-link href="#" class="card-link" @click="answerCardIncorrect(card.pk)">I did not get it</b-link>
         </b-card>
-        
-        <!--<p class="card-definition">-->
-        <!--  Definition:-->
-        <!--  <b v-html="card.definition"></b>-->
-        <!--</p>-->
-        <!--<input type="submit" @click="answerCardCorrect(card.pk)" value="I got it" />-->
-        <!--<input type="submit" @click="answerCardIncorrect(card.pk)" value="I did not get it" />-->
       </div>
     </b-row>
     <div v-if="done == 'temp'">
@@ -45,7 +28,6 @@
 
 <script>
 import { mapState, mapActions } from 'vuex'
-
 import Vue from 'vue'
 import { ToastPlugin, ButtonPlugin, FormGroupPlugin, FormPlugin, FormInputPlugin, LayoutPlugin, CardPlugin } from 'bootstrap-vue'
 
@@ -70,14 +52,36 @@ export default {
     card: state => state.cards.card,
     cardSide: state => state.cards.cardSide,
   }),
-  methods: mapActions('cards', [
-    'answerCardCorrect',
-    'answerCardIncorrect',
-    'showDefinition',
-  ]),
-  // props: {
-    
-  // },
+  methods: {
+    answerCardCorrect(pk) {
+      this.$store.dispatch('cards/answerCardCorrect', pk)
+      .then((card) => {
+          this.$bvToast.toast(`Answered correctly and moved to bin ${card.binNum}`, {
+            title: card.word,
+            autoHideDelay: 10000,
+            variant: 'success'
+          })
+        })
+    },
+    answerCardIncorrect(pk) {
+      this.$store.dispatch('cards/answerCardIncorrect', pk)
+        .then((card) => {
+          this.$bvToast.toast(`Answered wrong ${card.wrongCount} times`, {
+            title: card.word,
+            autoHideDelay: 10000,
+            variant: 'warning'
+          })
+        })
+    },
+    showDefinition(pk) {
+      this.$store.dispatch('cards/showDefinition', pk)
+    }
+  },
+  // methods: mapActions('cards', [
+  //   'answerCardCorrect',
+  //   'answerCardIncorrect',
+  //   'showDefinition',
+  // ]),
   created() {
     this.$store.dispatch('cards/getCard')
   }

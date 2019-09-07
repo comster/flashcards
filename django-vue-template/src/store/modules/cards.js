@@ -34,9 +34,12 @@ const actions = {
     })
   },
   addCard({ commit }, card) {
-    cardService.postCard(card)
-    .then((card) => {
-      commit('addCard', card)
+    return new Promise((resolve, reject) => {
+      cardService.postCard(card)
+      .then((card) => {
+        commit('addCard', card)
+        resolve(card)
+      })
     })
   },
   deleteCard( { commit }, pk) {
@@ -44,19 +47,25 @@ const actions = {
     commit('deleteCard', pk)
   },
   answerCardCorrect( { commit }, pk) {
-    cardService.answerCardCorrect(pk, true)
-    .then(card => {
-      commit('updateCard', card)
-      commit('cardSide', 'front')
-      commit('setCard', state.cards)
+    return new Promise((resolve, reject) => {
+      cardService.answerCardCorrect(pk, true)
+      .then(card => {
+        commit('updateCard', card)
+        commit('cardSide', 'front')
+        commit('setCard', state.cards)
+        resolve(card)
+      })
     })
   },
   answerCardIncorrect( { commit }, pk) {
-    cardService.answerCardCorrect(pk, false)
-    .then(card => {
-      commit('updateCard', card)
-      commit('cardSide', 'front')
-      commit('setCard', state.cards)
+    return new Promise((resolve, reject) => {
+      cardService.answerCardCorrect(pk, false)
+      .then(card => {
+        commit('updateCard', card)
+        commit('cardSide', 'front')
+        commit('setCard', state.cards)
+        resolve(card)
+      })
     })
   }
 }
@@ -72,60 +81,55 @@ const mutations = {
     // state.cards = cards
     
     // Find the next card to show the student
-      
-      // TODO move this server side?
-      
-      // Logic
-      // - `Cards` where `nextReviewAt` is less than now(), sorted by `binNum` asc
-      // - If result length is 0:
-      //     - `Cards` where `binNum` == 0
-      // - If result length is 0:
-      //     - If count of `Cards` where `nextReviewAt` != `null` is 0:
-      //         - display message ~ "perm done"
-      //     - Else:
-      //         - display message ~ "temp done"
-      
-      state.done = false
-      
-      console.log("CARD STATE", cards.length, state)
-      cards = cards.filter(obj => obj.binNum !== -1)
-      cards.sort(function(a, b) {
-        return a.binNum < b.binNum ? -1 : 1;
-      });
-      
-      let cardsToReview = 0
-      for(var c in cards) {
-        let card = cards[c]
-        // console.log(card)
-        
-        if(card.nextReviewAt) {
-          cardsToReview++
-          if(new Date(card.nextReviewAt) < new Date()) {
-            state.card = card
-            state.done = ""
-            return
-          }
+    
+    // TODO move this server side?
+    
+    // Logic
+    // - `Cards` where `nextReviewAt` is less than now(), sorted by `binNum` asc
+    // - If result length is 0:
+    //     - `Cards` where `binNum` == 0
+    // - If result length is 0:
+    //     - If count of `Cards` where `nextReviewAt` != `null` is 0:
+    //         - display message ~ "perm done"
+    //     - Else:
+    //         - display message ~ "temp done"
+    
+    // state.done = false
+    
+    cards = cards.filter(obj => obj.binNum !== -1)
+    cards.sort(function(a, b) {
+      return a.binNum < b.binNum ? -1 : 1;
+    });
+    
+    let cardsToReview = 0
+    for(var c in cards) {
+      let card = cards[c]
+      // console.log(card)
+      if(card.nextReviewAt) {
+        cardsToReview++
+        if(new Date(card.nextReviewAt) < new Date()) {
+          state.card = card
+          state.done = ""
+          return
         }
       }
-      
-      let binZeroCards = cards.filter(obj => obj.binNum === 0)
-      
-      if(binZeroCards.length > 0) {
-        state.card = binZeroCards[0]
-      } else if(cardsToReview !== 0) {
-        console.log('TEMP DONE')
-        state.card = null
-        state.done = "temp"
-        Vue.set(state, 'done', "temp");
-      } else {
-        console.log('COMPLETELY DONE')
-        state.done = "complete"
-        state.card = null
-        Vue.set(state, 'done', "complete");
-      }
-      // console.log(cards, cards[0])
-      // return false
+    }
     
+    let binZeroCards = cards.filter(obj => obj.binNum === 0)
+    
+    if(binZeroCards.length > 0) {
+      state.card = binZeroCards[0]
+    } else if(cardsToReview !== 0) {
+      // console.log('TEMP DONE')
+      state.done = "temp"
+      state.card = null
+      // Vue.set(state, 'done', "temp");
+    } else {
+      // console.log('COMPLETELY DONE')
+      state.done = "complete"
+      state.card = null
+      // Vue.set(state, 'done', "complete");
+    }
   },
   addCard(state, card) {
     state.cards.push(card)
