@@ -12,9 +12,6 @@ const getters = {
   cards: state => {
     return state.cards
   },
-  // done: state => {
-  //   return state.done
-  // }
 }
 
 const actions = {
