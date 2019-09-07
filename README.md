@@ -117,15 +117,15 @@ Optional Bonuses:
 
 The above specs are the bare-bones functionality we're looking for. You are free to go beyond these specs in ways that improve the user experience or better showcase your skills. Here are a few examples:
 
-- Using AJAX for the flashcards
+- Using AJAX for the flashcards ✔
 
-- Building a single-page app
+- Building a single-page app ✔
 
-- Better looking UI
+- Better looking UI ✔
 
-- Using our specific stack, particularly Django/AWS EC2
+- Using our specific stack, particularly Django/AWS EC2 ✔
 
-- Full flashcard CRUD capabilities for Admin
+- Full flashcard CRUD capabilities for Admin ✔
 
 - Implementing multiple users
 

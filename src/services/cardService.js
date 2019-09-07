@@ -13,8 +13,8 @@ export default {
     return api.delete(`cards/${pk}`)
               .then(response => response.data)
   },
-  putCard(pk, card) {
-    return api.put(`cards/${pk}/`, card)
+  putCard(card) {
+    return api.put(`cards/${card.pk}/`, card)
               .then(response => response.data)
   },
   answerCardCorrect(pk, isCorrect) {

@@ -35,11 +35,21 @@ const actions = {
   },
   addCard({ commit }, card) {
     return new Promise((resolve, reject) => {
-      cardService.postCard(card)
-      .then((card) => {
-        commit('addCard', card)
-        resolve(card)
-      })
+      if(card.pk) {
+        cardService.putCard(card)
+        .then((card) => {
+          commit('updateCard', card)
+          resolve(card)
+        })
+      } else {
+        cardService.postCard(card)
+        .then((card) => {
+          commit('addCard', card)
+          commit('cardSide', 'front')
+          commit('setCard', state.cards)
+          resolve(card)
+        })
+      }
     })
   },
   deleteCard( { commit }, pk) {
@@ -94,7 +104,7 @@ const mutations = {
     //     - Else:
     //         - display message ~ "temp done"
     
-    // state.done = false
+    state.done = null
     
     cards = cards.filter(obj => obj.binNum !== -1)
     cards.sort(function(a, b) {
@@ -109,7 +119,6 @@ const mutations = {
         cardsToReview++
         if(new Date(card.nextReviewAt) < new Date()) {
           state.card = card
-          state.done = ""
           return
         }
       }

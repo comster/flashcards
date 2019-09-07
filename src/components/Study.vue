@@ -4,32 +4,33 @@
       
       <b-col col lg="3" sm="1"> </b-col>
       <b-col col lg="6">
-      <div class="card-flip">
-				<div :class="[
-          cardSide == 'front' ? '' : 'flip',
-        ]">
-      
-          <div class="front">
-            <b-card
-              v-bind:title="card.word"
-              tag="article"
-              class="mb-2 text-center"
-            >
-              <b-button href="#" variant="primary" @click="showDefinition(card.pk)">Show definition</b-button>
-            </b-card>
-          </div>
-        <!--  </b-row>-->
-        <!--<b-row align-v="end">-->
-          <div class="back">
-            <b-card v-bind:title="card.word" v-bind:sub-title="card.definition">
-              <b-link href="#" class="card-link" @click="answerCardCorrect(card.pk)">I got it</b-link>
-              <b-link href="#" class="card-link" @click="answerCardIncorrect(card.pk)">I did not get it</b-link>
-            </b-card>
+        <div class="card-flip">
+  				<div :class="cardSide == 'front' ? '' : 'flip'">
+            <div class="front">
+              <b-card
+                v-bind:title="card.word"
+                tag="article"
+                class="mb-2 text-center"
+              >
+                <br />
+                <br />
+                <br />
+                <b-button href="#" variant="primary" @click="showDefinition(card.pk)">Show definition</b-button>
+              </b-card>
+            </div>
+          <!--  </b-row>-->
+          <!--<b-row align-v="end">-->
+            <div class="back">
+              <b-card v-bind:title="card.word" v-bind:sub-title="card.definition">
+                <br />
+                <br />
+                <br />
+                <b-link href="#" class="card-link" @click="answerCardCorrect(card.pk)">I got it</b-link>
+                <b-link href="#" class="card-link" @click="answerCardIncorrect(card.pk)">I did not get it</b-link>
+              </b-card>
+            </div>
           </div>
         </div>
-      </div>
-      
-      
       </b-col>
       <b-col col lg="3" sm="1"> </b-col>
       
@@ -120,7 +121,7 @@ export default {
 .front,
 .back {
   width: 100%;
-  height: 480px;
+  /*height: 480px;*/
 }
 
 .flip {
