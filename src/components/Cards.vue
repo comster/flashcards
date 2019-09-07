@@ -47,7 +47,7 @@
             <b v-html="card.definition"></b>
           </p>
           <p class="card-binNum">Bin #<span v-html="card.binNum"></span></p>
-          <p class="card-nextReviewAt">Next review: <span v-html="card.nextReviewAt"></span></p>
+          <p class="card-nextReviewAt">Next review: <span v-bind:title="card.nextReviewAt">{{ card.nextReviewAt | moment("from", true) }}</span></p>
           <p class="card-wrongCount">Times answered incorrect: <span v-html="card.wrongCount"></span></p>
           
           <b-button-group size="sm">
@@ -78,6 +78,10 @@ Vue.use(FormGroupPlugin)
 Vue.use(FormPlugin)
 Vue.use(CardPlugin)
 Vue.use(ButtonGroupPlugin)
+
+import VueMoment from 'vue-moment'
+
+Vue.use(VueMoment);
 
 export default {
   name: "Cards",
