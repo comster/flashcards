@@ -4,7 +4,8 @@ import Vue from 'vue'
 const state = {
   cards: [],
   card: {},
-  done: null
+  done: null,
+  cardSide: 'front'
 }
 
 const getters = {
@@ -17,11 +18,15 @@ const getters = {
 }
 
 const actions = {
+  showDefinition ({ commit }) {
+    commit('cardSide', 'back')
+  },
   getCard ({ commit }) {
     // Get the next card to show to the student for review
     cardService.fetchCards()
     .then(cards => {
       commit('setCards', cards)
+      commit('cardSide', 'front')
       commit('setCard', cards)
     })
   },
@@ -45,6 +50,7 @@ const actions = {
     cardService.answerCardCorrect(pk, true)
     .then(card => {
       commit('updateCard', card)
+      commit('cardSide', 'front')
       commit('setCard', state.cards)
     })
   },
@@ -52,6 +58,7 @@ const actions = {
     cardService.answerCardCorrect(pk, false)
     .then(card => {
       commit('updateCard', card)
+      commit('cardSide', 'front')
       commit('setCard', state.cards)
     })
   }
@@ -60,6 +67,9 @@ const actions = {
 const mutations = {
   setCards (state, cards) {
     state.cards = cards
+  },
+  cardSide (state, side) {
+    state.cardSide = side
   },
   setCard (state, cards) {
     // state.cards = cards
