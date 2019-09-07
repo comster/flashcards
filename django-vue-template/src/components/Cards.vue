@@ -17,7 +17,7 @@
     <h3>Flashcards</h3>
     <p v-if="cards.length === 0">No Cards</p>
     <div class="card" v-for="(card, index) in cards" :key="index">
-        <p class="card-number">ID#{{card.pk}}</p>
+        <p class="card-pk">ID#{{card.pk}}</p>
         <p class="card-word">
           Word:
           <b v-html="card.word"></b>

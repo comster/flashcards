@@ -18,24 +18,6 @@ Query next card:
     - Else:
         - display message ~ "temp done"
 
-
-Saving card flash:
-
-- Right:
-    - inc card.binNum
-    - If card.binNum < 11:
-        - set card.nextReviewAt timestamp based on card.binNum associated timespan + now
-    - Else: 
-        - unset card.nextReviewAt timestamp
-- Wrong: 
-    - inc card.wrongCount
-    - If card.wrongCount >= 10:
-        - set card.binNum to -1
-        - unset card.nextReviewAt timestamp
-    - Else:
-        - set card.binNum to 1
-        - set card.nextReviewAt timestamp based on card.binNum associated timespan + now
-
 """
 
 # Corresponding wait times for each bin
