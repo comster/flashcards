@@ -1,7 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import VueDemo from '@/components/VueDemo'
-import Messages from '@/components/Messages'
 import Study from '@/components/Study'
 import Cards from '@/components/Cards'
 
@@ -24,10 +23,5 @@ export default new Router({
       name: 'cards',
       component: Cards
     },
-    // {
-    //   path: '/messages',
-    //   name: 'messages',
-    //   component: Messages
-    // }
   ]
 })
