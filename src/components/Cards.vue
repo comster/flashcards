@@ -47,7 +47,10 @@
             <b v-html="card.definition"></b>
           </p>
           <p class="card-binNum">Bin #<span v-html="card.binNum"></span></p>
-          <p class="card-nextReviewAt">Next review: <span v-bind:title="card.nextReviewAt">{{ card.nextReviewAt | moment("from", true) }}</span></p>
+          <p class="card-nextReviewAt">Next review: 
+            <span v-if="card.nextReviewAt" v-bind:title="card.nextReviewAt">{{ card.nextReviewAt | moment("from", true) }}</span>
+            <span v-else>None</span>
+          </p>
           <p class="card-wrongCount">Times answered incorrect: <span v-html="card.wrongCount"></span></p>
           
           <b-button-group size="sm">
@@ -69,8 +72,11 @@
 import { mapState, mapActions } from 'vuex'
 
 import Vue from 'vue'
+import utils from '@/utils'
+import VueMoment from 'vue-moment'
 import { FormGroupPlugin, FormPlugin, FormInputPlugin, LayoutPlugin, CardPlugin, ButtonGroupPlugin, ToastPlugin } from 'bootstrap-vue'
 
+Vue.use(VueMoment);
 Vue.use(ToastPlugin)
 Vue.use(FormInputPlugin)
 Vue.use(LayoutPlugin)
@@ -78,10 +84,6 @@ Vue.use(FormGroupPlugin)
 Vue.use(FormPlugin)
 Vue.use(CardPlugin)
 Vue.use(ButtonGroupPlugin)
-
-import VueMoment from 'vue-moment'
-
-Vue.use(VueMoment);
 
 export default {
   name: "Cards",
@@ -112,21 +114,13 @@ export default {
       answerCardCorrect(pk) {
         this.$store.dispatch('cards/answerCardCorrect', pk)
         .then((card) => {
-            this.$bvToast.toast(`Answered correctly and moved to bin ${card.binNum}`, {
-              title: card.word,
-              autoHideDelay: 5000,
-              variant: 'success'
-            })
+            utils.toastCard(this.$bvToast, card, true)
           })
       },
       answerCardIncorrect(pk) {
         this.$store.dispatch('cards/answerCardIncorrect', pk)
           .then((card) => {
-            this.$bvToast.toast(`Answered wrong ${card.wrongCount} times`, {
-              title: card.word,
-              autoHideDelay: 5000,
-              variant: 'warning'
-            })
+            utils.toastCard(this.$bvToast, card, false)
           })
       },
       deleteCard(pk) {
