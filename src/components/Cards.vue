@@ -33,11 +33,11 @@
           <p class="card-pk">ID#{{card.pk}}</p>
           <p class="card-word">
             Word:
-            <b v-html="card.word"></b>
+            <b v-text="card.word"></b>
           </p>
           <p class="card-definition">
             Definition:
-            <b v-html="card.definition"></b>
+            <b v-text="card.definition"></b>
           </p>
           <p class="card-binNum">Bin #<span v-html="card.binNum"></span></p>
           <p class="card-nextReviewAt">Next review: 
